@@ -1,0 +1,842 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>لوحة سجلات ومحادثات بوت أَدِرْ الذكي | Ader Bot Logs</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <!-- تحميل ملف السجلات المباشر لدعم فتح الملف عبر المتصفح بدون سيرفر -->
+  <script src="logs.js"></script>
+  <style>
+    :root {
+      --bg-dark: #090d16;
+      --bg-card: rgba(17, 24, 39, 0.75);
+      --bg-card-hover: rgba(31, 41, 55, 0.85);
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-accent: rgba(99, 102, 241, 0.3);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.35);
+      --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.25);
+      --amber: #f59e0b;
+      --cyan: #06b6d4;
+      --purple: #8b5cf6;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%),
+        radial-gradient(at 50% 50%, rgba(6, 182, 212, 0.08) 0px, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: 'Cairo', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 24px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+    }
+
+    /* رأس الصفحة */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 28px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .brand-section {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .logo-badge {
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #4f46e5, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 0 20px var(--primary-glow);
+    }
+
+    .title-group h1 {
+      font-size: 24px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #fff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .title-group p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .status-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 13px;
+      color: #34d399;
+      font-weight: 600;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #10b981;
+      border-radius: 50%;
+      box-shadow: 0 0 10px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.2); opacity: 1; box-shadow: 0 0 15px #10b981; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      backdrop-filter: blur(8px);
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      border: none;
+      color: #fff;
+      box-shadow: 0 4px 12px var(--primary-glow);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #4338ca, #4f46e5);
+      box-shadow: 0 6px 16px var(--primary-glow);
+    }
+
+    .btn-danger {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #f87171;
+    }
+
+    .btn-danger:hover {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+    }
+
+    /* بطاقات الإحصائيات */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+    }
+
+    .stat-card:hover {
+      border-color: var(--border-accent);
+      transform: translateY(-2px);
+    }
+
+    .stat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .stat-val {
+      font-size: 24px;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .stat-lbl {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* شريط البحث والتصفية */
+    .filter-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(12px);
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .search-box input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 10px 42px 10px 14px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 12px var(--primary-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 16px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      font-family: inherit;
+    }
+
+    .tab-btn:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .tab-btn.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+      box-shadow: 0 2px 8px var(--primary-glow);
+    }
+
+    /* قائمة السجلات */
+    .logs-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .log-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(12px);
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .log-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--primary);
+      opacity: 0.8;
+    }
+
+    .log-card.voice-card::before {
+      background: #06b6d4;
+    }
+
+    .log-card:hover {
+      border-color: rgba(255, 255, 255, 0.18);
+      background: var(--bg-card-hover);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    .log-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .user-avatar {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+      color: #fff;
+      text-transform: uppercase;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .user-names {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-fullname {
+      font-weight: 700;
+      font-size: 15px;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .user-meta {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .log-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .badge-voice {
+      background: rgba(6, 182, 212, 0.15);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+      color: #22d3ee;
+    }
+
+    .badge-text {
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      color: #818cf8;
+    }
+
+    .badge-model {
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: #fbbf24;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+    }
+
+    .badge-time {
+      color: var(--text-muted);
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* جسم المحادثة */
+    .conversation-body {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+
+    .message-bubble {
+      border-radius: 12px;
+      padding: 14px 16px;
+      position: relative;
+    }
+
+    .user-question-box {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-right: 3px solid #38bdf8;
+    }
+
+    .bot-reply-box {
+      background: rgba(99, 102, 241, 0.07);
+      border: 1px solid rgba(99, 102, 241, 0.2);
+      border-right: 3px solid #10b981;
+    }
+
+    .bubble-title {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .user-question-box .bubble-title {
+      color: #38bdf8;
+    }
+
+    .bot-reply-box .bubble-title {
+      color: #34d399;
+    }
+
+    .bubble-text {
+      font-size: 14px;
+      color: #e2e8f0;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .copy-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    /* حالة الفراغ */
+    .empty-state {
+      background: var(--bg-card);
+      border: 1px dashed var(--border-color);
+      border-radius: 16px;
+      padding: 60px 20px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-icon {
+      font-size: 48px;
+      margin-bottom: 12px;
+      opacity: 0.6;
+    }
+
+    /* تذييل الصفحة */
+    footer {
+      margin-top: 40px;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 13px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border-color);
+    }
+
+    /* التجاوب للشاشات الصغيرة */
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .header-actions {
+        width: 100%;
+        justify-content: space-between;
+      }
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- الرأس -->
+    <header>
+      <div class="brand-section">
+        <div class="logo-badge">🤖</div>
+        <div class="title-group">
+          <h1>سجلات محادثات بوت أَدِرْ الذكي</h1>
+          <p>لوحة تحكم مباشرة لعرض أسئلة العملاء، الريكوردات الصوتية، وردود الذكاء الاصطناعي</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="status-indicator">
+          <span class="status-dot"></span>
+          <span id="connectionStatus">مباشر (تحديث تلقائي)</span>
+        </div>
+        <button class="btn btn-primary" onclick="loadLogs(true)">🔄 تحديث الآن</button>
+        <button class="btn btn-danger" onclick="confirmClearLogs()">🗑️ مسح السجلات</button>
+      </div>
+    </header>
+
+    <!-- بطاقات الإحصائيات -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(99, 102, 241, 0.15); color: #818cf8;">💬</div>
+        <div>
+          <div class="stat-val" id="statTotal">0</div>
+          <div class="stat-lbl">إجمالي المحادثات</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(6, 182, 212, 0.15); color: #22d3ee;">🎙️</div>
+        <div>
+          <div class="stat-val" id="statVoice">0</div>
+          <div class="stat-lbl">تسجيلات صوتية (Groq)</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(16, 185, 129, 0.15); color: #34d399;">📝</div>
+        <div>
+          <div class="stat-val" id="statText">0</div>
+          <div class="stat-lbl">رسائل نصية</div>
+        </div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-icon" style="background: rgba(245, 158, 11, 0.15); color: #fbbf24;">👥</div>
+        <div>
+          <div class="stat-val" id="statUsers">0</div>
+          <div class="stat-lbl">عملاء مختلفين</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- شريط البحث والتصفية -->
+    <div class="filter-bar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="ابحث باسم العميل، اليوزرنيم، أو محتوى السؤال والرد..." oninput="filterLogs()">
+      </div>
+
+      <div class="filter-tabs">
+        <button class="tab-btn active" onclick="setFilter('all', this)">الكل</button>
+        <button class="tab-btn" onclick="setFilter('voice', this)">🎙️ صوتي فقط</button>
+        <button class="tab-btn" onclick="setFilter('text', this)">💬 نصي فقط</button>
+        <button class="tab-btn" onclick="setFilter('groq', this)">⚡ Groq</button>
+        <button class="tab-btn" onclick="setFilter('gemini', this)">💎 Gemini</button>
+      </div>
+    </div>
+
+    <!-- حاوية السجلات -->
+    <div class="logs-container" id="logsFeed">
+      <!-- يتم حقن السجلات هنا برمجياً -->
+    </div>
+
+    <!-- التذييل -->
+    <footer>
+      منصة أَدِرْ (Ader AI) &copy; 2026 — نظام متابعة ورصد محادثات مستشار المبيعات الذكي
+    </footer>
+  </div>
+
+  <script>
+    let allLogs = [];
+    let currentFilter = 'all';
+
+    // تحميل السجلات
+    async function loadLogs(manual = false) {
+      let loaded = false;
+
+      // 1. محاولة جلب السجلات من خادم الـ API المحلي إن كان البوت شغالاً
+      try {
+        const res = await fetch('http://localhost:3344/api/logs', { cache: 'no-cache' });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data)) {
+            allLogs = data;
+            loaded = true;
+            document.getElementById('connectionStatus').textContent = 'متصل بالبوت (مباشر)';
+          }
+        }
+      } catch (e) {
+        // الخادم المحلي غير متصل، نعتمد على logs.js المضمن
+      }
+
+      // 2. إذا لم ينجح الفيتش، نقرأ من الكائن المحمل من logs.js
+      if (!loaded) {
+        if (window.BOT_LOGS && Array.isArray(window.BOT_LOGS)) {
+          allLogs = window.BOT_LOGS;
+          document.getElementById('connectionStatus').textContent = 'نمط الملفات المحلية';
+        } else {
+          allLogs = [];
+        }
+      }
+
+      updateStats();
+      renderLogs();
+
+      if (manual) {
+        const btn = document.querySelector('.btn-primary');
+        const orig = btn.innerHTML;
+        btn.innerHTML = '✅ تم التحديث!';
+        setTimeout(() => btn.innerHTML = orig, 1200);
+      }
+    }
+
+    // تحديث بطاقات الإحصائيات
+    function updateStats() {
+      const total = allLogs.length;
+      const voice = allLogs.filter(l => l.messageType === 'voice').length;
+      const text = allLogs.filter(l => l.messageType === 'text').length;
+      const uniqueUsers = new Set(allLogs.map(l => l.user?.id || l.user?.username)).size;
+
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statVoice').textContent = voice;
+      document.getElementById('statText').textContent = text;
+      document.getElementById('statUsers').textContent = uniqueUsers;
+    }
+
+    // تغيير التصفية
+    function setFilter(filter, btn) {
+      currentFilter = filter;
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderLogs();
+    }
+
+    // البحث والتصفية
+    function filterLogs() {
+      renderLogs();
+    }
+
+    // رسم السجلات
+    function renderLogs() {
+      const container = document.getElementById('logsFeed');
+      const query = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+
+      let filtered = allLogs.filter(log => {
+        // تصفية حسب النوع أو المزود
+        if (currentFilter === 'voice' && log.messageType !== 'voice') return false;
+        if (currentFilter === 'text' && log.messageType !== 'text') return false;
+        if (currentFilter === 'groq' && log.provider !== 'groq') return false;
+        if (currentFilter === 'gemini' && log.provider !== 'gemini') return false;
+
+        // تصفية بالبحث
+        if (query) {
+          const uName = (log.user?.fullName || '').toLowerCase();
+          const uNick = (log.user?.username || '').toLowerCase();
+          const uMsg = (log.userMessage || '').toLowerCase();
+          const bReply = (log.botReply || '').toLowerCase();
+          return uName.includes(query) || uNick.includes(query) || uMsg.includes(query) || bReply.includes(query);
+        }
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-icon">📭</div>
+            <h3>لا توجد محادثات مطابقة</h3>
+            <p>لم يتم تسجيل رسائل جديدة حتى الآن أو لا توجد نتائج لبحثك.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = filtered.map(log => {
+        const isVoice = log.messageType === 'voice';
+        const initial = (log.user?.fullName || 'ع')[0];
+        const formattedTime = log.formattedTime || '';
+        const formattedDate = log.formattedDate || '';
+
+        return `
+          <div class="log-card ${isVoice ? 'voice-card' : ''}">
+            <div class="log-header">
+              <div class="user-info">
+                <div class="user-avatar">${initial}</div>
+                <div class="user-names">
+                  <div class="user-fullname">${escapeHtml(log.user?.fullName || 'عميل')}</div>
+                  <div class="user-meta">
+                    <span>${escapeHtml(log.user?.username || '')}</span>
+                    <span>• ID: ${log.user?.id || '—'}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="log-badges">
+                ${isVoice 
+                  ? '<span class="badge badge-voice">🎙️ ريكورد صوتي (Whisper)</span>' 
+                  : '<span class="badge badge-text">💬 رسالة نصية</span>'}
+                <span class="badge badge-model">⚡ ${escapeHtml(log.model || log.provider)}</span>
+                <span class="badge-time">🕒 ${formattedTime} — ${formattedDate}</span>
+              </div>
+            </div>
+
+            <div class="conversation-body">
+              <div class="message-bubble user-question-box">
+                <div class="bubble-title">
+                  <span>${isVoice ? '🎙️ تفريغ صوت العميل:' : '👤 سؤال العميل:'}</span>
+                  <button class="copy-btn" onclick="copyText('${escapeQuotes(log.userMessage)}')">📋 نسخ</button>
+                </div>
+                <div class="bubble-text">${escapeHtml(log.userMessage)}</div>
+              </div>
+
+              <div class="message-bubble bot-reply-box">
+                <div class="bubble-title">
+                  <span>🤖 رد مستشار أَدِرْ الذكي:</span>
+                  <button class="copy-btn" onclick="copyText('${escapeQuotes(log.botReply)}')">📋 نسخ</button>
+                </div>
+                <div class="bubble-text">${escapeHtml(log.botReply)}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // دوال مساعدة
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function escapeQuotes(str) {
+      if (!str) return '';
+      return String(str).replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '');
+    }
+
+    function copyText(text) {
+      navigator.clipboard.writeText(text).then(() => {
+        alert('تم نسخ النص إلى الحافظة! 📋');
+      });
+    }
+
+    async function confirmClearLogs() {
+      if (confirm('هل أنت متأكد من رغبتك في مسح كل سجلات المحادثات؟')) {
+        try {
+          await fetch('http://localhost:3344/api/clear', { method: 'POST' });
+        } catch (e) {}
+        window.BOT_LOGS = [];
+        allLogs = [];
+        updateStats();
+        renderLogs();
+      }
+    }
+
+    // تحديث تلقائي دوري كل 4 ثوانٍ
+    setInterval(() => {
+      loadLogs(false);
+    }, 4000);
+
+    // البدء الفوري
+    loadLogs();
+  </script>
+</body>
+</html>

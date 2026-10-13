@@ -1,0 +1,15 @@
+{
+  "name": "ader-telegram-bot",
+  "version": "1.0.0",
+  "description": "Ader Sales Telegram Bot with Gemini and Groq support",
+  "main": "bot.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node bot.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "groq-sdk": "^0.15.0",
+    "telegraf": "^4.16.3"
+  }
+}

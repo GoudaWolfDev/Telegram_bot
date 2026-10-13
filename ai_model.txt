@@ -1,0 +1,10 @@
+# اختر المزود النشط: gemini أو groq
+provider=groq
+
+# إعدادات Groq
+groq_model=openai/gpt-oss-120b
+groq_key=
+# إعدادات Gemini
+gemini_model=gemini-2.5-flash
+gemini_key=
+
