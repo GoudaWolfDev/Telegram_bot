@@ -3,7 +3,7 @@
 </p>
 
 <h1 align="center">
-  🤖 Ader Sales Telegram Bot | بوت مبيعات عادر الذكي
+  🤖 Ader Sales Telegram Bot | بوت مبيعات ادر الذكي
 </h1>
 
 <p align="center">
